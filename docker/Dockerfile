@@ -14,6 +14,7 @@ COPY docker-entrypoint.js ./bin/
 
 FROM node:18-alpine
 RUN apk add procps curl
+RUN apk add --update --no-cache python3
 COPY --from=builder /opt/cronicle/ /opt/cronicle/
 WORKDIR /opt/cronicle
 ENV CRONICLE_foreground=1
