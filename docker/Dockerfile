@@ -1,7 +1,8 @@
 FROM node:18-bullseye AS Builder
-ENV CRONICLE_VERSION=0.9.46
+# WAS ENV CRONICLE_VERSION=0.9.46
+ENV CRONICLE_VERSION=0.9.59
 WORKDIR /opt/cronicle
-RUN curl -L -o /tmp/Cronicle-${CRONICLE_VERSION}.tar.gz https://github.com/jhuckaby/Cronicle/archive/refs/tags/v0.9.46.tar.gz
+RUN curl -L -o /tmp/Cronicle-${CRONICLE_VERSION}.tar.gz https://github.com/jhuckaby/Cronicle/archive/refs/tags/v${CRONICLE_VERSION}.tar.gz
 # COPY Cronicle-${CRONICLE_VERSION}.tar.gz /tmp/
 RUN tar zxvf /tmp/Cronicle-${CRONICLE_VERSION}.tar.gz -C /tmp/ && \
     mv /tmp/Cronicle-${CRONICLE_VERSION}/* . && \
@@ -11,10 +12,15 @@ COPY ./patches /tmp/patches
 RUN patch -p3 < /tmp/patches/engine.patch lib/engine.js
 COPY docker-entrypoint.js ./bin/
 
-
 FROM node:18-alpine
 RUN apk add procps curl
-RUN apk add --update --no-cache python3
+
+# Add Python and packages
+RUN apk add --update --no-cache python3 py3-pip
+RUN pip install mysql-connector-python --break-system-packages
+# Add mysql
+RUN apk add mysql-client
+
 COPY --from=builder /opt/cronicle/ /opt/cronicle/
 WORKDIR /opt/cronicle
 ENV CRONICLE_foreground=1
