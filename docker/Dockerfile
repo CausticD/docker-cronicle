@@ -13,7 +13,7 @@ RUN patch -p3 < /tmp/patches/engine.patch lib/engine.js
 COPY docker-entrypoint.js ./bin/
 
 FROM node:18-alpine
-RUN apk add procps curl
+RUN apk add procps curl bash
 
 # Add Python and packages
 RUN apk add --update --no-cache python3 py3-pip
