@@ -1,5 +1,5 @@
 FROM node:18-bullseye AS Builder
-ENV CRONICLE_VERSION=0.9.71
+ENV CRONICLE_VERSION=0.9.80
 WORKDIR /opt/cronicle
 RUN curl -L -o /tmp/Cronicle-${CRONICLE_VERSION}.tar.gz https://github.com/jhuckaby/Cronicle/archive/refs/tags/v${CRONICLE_VERSION}.tar.gz
 # COPY Cronicle-${CRONICLE_VERSION}.tar.gz /tmp/
@@ -16,7 +16,7 @@ RUN apk add procps curl bash
 
 # Add Python and packages
 RUN apk add --update --no-cache python3 py3-pip
-RUN pip install mysql-connector-python --break-system-packages
+RUN pip install mysql-connector-python requests --break-system-packages
 # Add mysql
 RUN apk add mysql-client
 
